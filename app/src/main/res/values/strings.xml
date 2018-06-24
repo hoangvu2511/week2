@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">SearchArticle</string>
+    <string name="API_KEY">8ed8422c95fc47a7bce1af60885368b9</string>
+    <string name="beginDate">Begin Date </string>
+    <string name="date">Date</string>
+    <string name="oldest">Oldest</string>
+    <string name="newest">Newest</string>
+    <string name="sort">Sort Order</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="newValue">New desk value</string>
+    <string name="art">Arts</string>
+    <string name="fashion">Fashion &amp; Style</string>
+    <string name="sport">Sports</string>
+    <string name="url">https://api.nytimes.com/svc/search/v2/articlesearch.json</string>
+
+    <string name="Title">Title</string>
+    <string name="error">Error: you have to choose a date in the past</string>
+    <string name="error_network">You are offline</string>
+    <string name="error_dont_have_list">End result</string>
+
+    <string name="GG">You are here</string>
+
+    <string name="action_ok">Ok</string>
+    <string name="action_share">Share</string>
+</resources>

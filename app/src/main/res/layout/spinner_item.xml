@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/spinnerItem"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingStart="10sp"
+    android:paddingEnd="0sp"
+    style="@style/spinner_dropdown_style_theme1"
+    android:hint="@string/newValue"/>
