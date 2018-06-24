@@ -43,6 +43,11 @@ public class ComplexAdapterRecyclerView extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
+    public List<Doc> getData(){
+        List<Doc> docs = this.docList;
+        return  docs;
+    }
+
     public ComplexAdapterRecyclerView(Context context){
         this.ctx = context;
     }

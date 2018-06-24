@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,11 +63,10 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
 
     private EndlessRecyclerViewScrollListener scrollListener;
 
+    StaggeredGridLayoutManager gridLayoutManager;
+
     public int page = 1;
 
-    ShareActionProvider miShare;
-
-    MenuItem shareLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +75,11 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         NetWorkUtil.setContext(this);
-        setUpView();
         SearchArticleModelImp modelImp = new SearchArticleModelImp();
         searchArticleInterface = new SearchArticlePresenter(modelImp,this);
-        loadPage();
+        setUpView();
+        if (savedInstanceState == null)
+            loadPage();
     }
 
     @Override
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
                 searchView.clearFocus();
                 searchQuery = query;
                 resetState();
-                Snackbar.make(recyclerView,R.string.GG,Snackbar.LENGTH_LONG).show();
                 loadPage();
                 return true;
             }
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
                 return false;
             }
         });
-
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -162,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
 
         adapterRecyclerView = new ComplexAdapterRecyclerView(this);
         adapterRecyclerView.setData(docs);
-
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL);
+        if(gridLayoutManager == null)
+            gridLayoutManager = new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapterRecyclerView);
@@ -240,32 +238,17 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
      */
     private void toWebTab(String url) {
 
-
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_share);
 
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.setAction("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.BROWSABLE");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setPackage("com.android.chrome");
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-
-        int requestCode = 100;
-
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-//                requestCode,
-//                intent,PendingIntent.FLAG_ONE_SHOT);
+        Bitmap backbtn = BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_back);
 
         PendingIntent pendingIntent = createPendingShareIntent();
 
-//        builder.addDefaultShareMenuItem();
         builder.setActionButton(bitmap, "Share Link", pendingIntent, true);
 
-
+        builder.setCloseButtonIcon(backbtn);
 
         builder.setToolbarColor(ContextCompat.getColor(this,R.color.colorAqua));
 
@@ -285,12 +268,9 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
         scrollListener.resetState();
     }
 
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
+    /**
+     * load more page
+     */
     private void loadPage(){
         searchArticleInterface.searchFull(dates,sort,art,fashion,sport,searchQuery,page);
     }
@@ -301,5 +281,31 @@ public class MainActivity extends AppCompatActivity implements ArticleViewInrefa
         actionIntent.putExtra(Intent.EXTRA_TEXT, "Share text");
         return PendingIntent.getActivity(
                 getApplicationContext(), 0, actionIntent, 0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Parcelable parcelable = gridLayoutManager.onSaveInstanceState();
+        outState.putParcelable("manager",parcelable);
+
+        outState.putParcelableArrayList("list", (ArrayList<Doc>) adapterRecyclerView.getData());
+        long b=100;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null){
+            gridLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable("manager"));
+            List<Doc> docs = savedInstanceState.getParcelableArrayList("list");
+            adapterRecyclerView.setData(docs);
+            hideLoading();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

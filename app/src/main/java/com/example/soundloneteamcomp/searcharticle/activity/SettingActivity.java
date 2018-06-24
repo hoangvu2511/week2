@@ -168,12 +168,4 @@ public class SettingActivity extends AppCompatActivity implements DatePickerDial
         finish();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("dates",dates);
-        outState.putString("sort",sort);
-        outState.putString("querry",searchQuerry);
-//        outState.putString();
-    }
 }
