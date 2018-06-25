@@ -24,6 +24,7 @@ The following **optional** features are implemented:
 * [x] Used the **ActionBar SearchView** or custom layout as the query box instead of an EditText
 * [x] User can **share an article link** to their friends or email it to themselves
 * [x] Replaced Filter Settings Activity with a lightweight modal overlay
+* [x] Displaying the Snackbar
 
 The following **bonus** features are implemented:
 
