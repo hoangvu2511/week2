@@ -1,9 +1,12 @@
 package com.example.soundloneteamcomp.searcharticle.SearchArticle;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Person {
+public class Person implements Parcelable {
 
     @SerializedName("firstname")
     @Expose
@@ -94,4 +97,44 @@ public class Person {
         this.rank = rank;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.firstname);
+        dest.writeString(this.middlename);
+        dest.writeString(this.lastname);
+        dest.writeString(this.title);
+        dest.writeString(this.role);
+        dest.writeString(this.organization);
+        dest.writeValue(this.rank);
+    }
+
+    public Person() {
+    }
+
+    protected Person(Parcel in) {
+        this.firstname = in.readString();
+        this.middlename = in.readString();
+        this.lastname = in.readString();
+        this.title = in.readString();
+        this.role = in.readString();
+        this.organization = in.readString();
+        this.rank = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
+        @Override
+        public Person createFromParcel(Parcel source) {
+            return new Person(source);
+        }
+
+        @Override
+        public Person[] newArray(int size) {
+            return new Person[size];
+        }
+    };
 }

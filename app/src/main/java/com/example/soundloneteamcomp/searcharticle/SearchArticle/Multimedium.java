@@ -1,9 +1,12 @@
 package com.example.soundloneteamcomp.searcharticle.SearchArticle;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Multimedium {
+public class Multimedium implements Parcelable {
 
     @SerializedName("rank")
     @Expose
@@ -127,4 +130,46 @@ public class Multimedium {
 //        this.cropName = cropName;
 //    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.rank);
+        dest.writeString(this.subtype);
+        dest.writeString(this.type);
+        dest.writeString(this.url);
+        dest.writeInt(this.height);
+        dest.writeInt(this.width);
+        dest.writeParcelable(this.legacy, flags);
+        dest.writeString(this.subType);
+    }
+
+    public Multimedium() {
+    }
+
+    protected Multimedium(Parcel in) {
+        this.rank = in.readInt();
+        this.subtype = in.readString();
+        this.type = in.readString();
+        this.url = in.readString();
+        this.height = in.readInt();
+        this.width = in.readInt();
+        this.legacy = in.readParcelable(Legacy.class.getClassLoader());
+        this.subType = in.readString();
+    }
+
+    public static final Parcelable.Creator<Multimedium> CREATOR = new Parcelable.Creator<Multimedium>() {
+        @Override
+        public Multimedium createFromParcel(Parcel source) {
+            return new Multimedium(source);
+        }
+
+        @Override
+        public Multimedium[] newArray(int size) {
+            return new Multimedium[size];
+        }
+    };
 }
